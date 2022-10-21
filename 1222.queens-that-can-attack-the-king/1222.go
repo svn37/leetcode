@@ -1,0 +1,77 @@
+/**
+ * On an 8x8 chessboard, there can be multiple Black Queens and one White King.
+ * Given an array of integer coordinates queens that represents the positions of the Black Queens, and a pair of coordinates king that represent the position of the White King, return the coordinates of all the queens (in any order) that can attack the King.
+ *
+ * Example 1:
+ * <img alt="" src="https://assets.leetcode.com/uploads/2019/10/01/untitled-diagram.jpg" style="width: 321px; height: 321px;" />
+ *
+ * Input: queens = [[0,1],[1,0],[4,0],[0,4],[3,3],[2,4]], king = [0,0]
+ * Output: [[0,1],[1,0],[3,3]]
+ * Explanation:
+ * The queen at [0,1] can attack the king cause they're in the same row.
+ * The queen at [1,0] can attack the king cause they're in the same column.
+ * The queen at [3,3] can attack the king cause they're in the same diagnal.
+ * The queen at [0,4] can't attack the king cause it's blocked by the queen at [0,1].
+ * The queen at [4,0] can't attack the king cause it's blocked by the queen at [1,0].
+ * The queen at [2,4] can't attack the king cause it's not in the same row/column/diagnal as the king.
+ *
+ * Example 2:
+ * <img alt="" src="https://assets.leetcode.com/uploads/2019/10/01/untitled-diagram-1.jpg" style="width: 321px; height: 321px;" />
+ *
+ * Input: queens = [[0,0],[1,1],[2,2],[3,4],[3,5],[4,4],[4,5]], king = [3,3]
+ * Output: [[2,2],[3,4],[4,4]]
+ *
+ * Example 3:
+ * <img alt="" src="https://assets.leetcode.com/uploads/2019/10/01/untitled-diagram-2.jpg" style="width: 321px; height: 321px;" />
+ *
+ * Input: queens = [[5,6],[7,7],[2,1],[0,7],[1,6],[5,1],[3,7],[0,3],[4,0],[1,2],[6,3],[5,0],[0,4],[2,2],[1,1],[6,4],[5,4],[0,0],[2,6],[4,5],[5,2],[1,4],[7,5],[2,3],[0,5],[4,2],[1,0],[2,7],[0,1],[4,6],[6,1],[0,6],[4,3],[1,7]], king = [3,4]
+ * Output: [[2,3],[1,4],[1,6],[3,7],[4,3],[5,4],[4,5]]
+ *
+ *
+ * Constraints:
+ *
+ * 	1 <= queens.length <= 63
+ * 	queens[0].length == 2
+ * 	0 <= queens[i][j] < 8
+ * 	king.length == 2
+ * 	0 <= king[0], king[1] < 8
+ * 	At most one piece is allowed in a cell.
+ *
+ */
+
+package leetcode
+
+func queensAttacktheKing(queens [][]int, king []int) [][]int {
+	queenMap := make([][]bool, 8)
+
+	for _, queen := range queens {
+		if queenMap[queen[0]] == nil {
+			queenMap[queen[0]] = make([]bool, 8)
+		}
+		queenMap[queen[0]][queen[1]] = true
+	}
+
+	res := [][]int{}
+
+	dirs := []int{-1, 0, 1}
+	for _, dx := range dirs {
+		for _, dy := range dirs {
+			if dx == 0 && dy == 0 {
+				continue
+			}
+
+			x, y := king[0], king[1]
+			for x+dx >= 0 && x+dx < 8 && y+dy >= 0 && y+dy < 8 {
+				x += dx
+				y += dy
+
+				if queenMap[x] != nil && queenMap[x][y] {
+					res = append(res, []int{x, y})
+					break
+				}
+			}
+		}
+	}
+
+	return res
+}
